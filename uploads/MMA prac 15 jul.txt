@@ -1,0 +1,36 @@
+Section .Data part ->
+eg: msg db 10, "sum of array eleemnts is :"
+msg_len equ $-msg  ; laculaates length of message and assigns to variable msg_len 
+
+
+$ -> current address of prompt or pointer.
+10: new line ascii value in decimal. (you can use 0Ah in HEX too)
+equ : assigns right side value to left side variable
+semicolon: comments in assembly lang
+
+----------------------------------------------------
+
+Section .BSS --> uninitilaised variable declaration
+syntax: 
+
+var_name RES memory_type Memeory_Size
+eg: A resb 50
+
+meaning: declrare variable A and assign 50 bytes to it.
+------------------------------------------------------
+Section .Text --> code of program:
+section where instructions are written
+always starts with: 
+global _start    --> entry point of program
+_start:
+
+
+
+
+this part can have:
+microprocessor instructions, read, write system calls etc.
+===========================================================================
+system write/ output call:
+display variable_name contents:
+
+
