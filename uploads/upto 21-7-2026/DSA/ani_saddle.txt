@@ -1,0 +1,128 @@
+#include <stdio.h>
+
+void accept(int a[10][10] , int rows,int cols){
+
+for (int i =0;i<rows;i++){
+
+	for (int j = 0; j<cols;j++){
+		
+		scanf("%d" ,& a[i][j]);		
+	
+		}
+
+	}
+}
+
+void print (int a[10][10] , int rows,int cols){
+
+for (int i =0;i<rows;i++){
+
+	for (int j = 0; j<cols;j++){
+		
+		printf("%d" , a[i][j]);		
+	
+		}
+		printf("\n");
+
+	}
+}
+
+void saddleChk (int input [10][10] , int rows,int cols){
+
+for (int i =0 ; i < rows;i++){
+int minVal;
+int minCol = [i][0];
+
+	for (int j =0 ; j< cols;j++){
+		
+		if (input [i][j] < minCol){
+		minCol = input [i][j];
+		
+			}
+	
+	
+		}
+
+}
+
+for ( int j =0 ; j<cols ; j++){
+	
+	for (int i =0; i < rows;i++){
+		
+	
+
+			}
+
+
+}
+
+
+
+
+
+
+/*
+int minCol =0 ;
+int output;
+int min =0;
+for (int i =0;i<rows;i++){
+
+	min = input [i][0];
+	
+		for (int j =0; j< cols;j++){
+		
+			 if (input[i][j] < min){
+			 	min = input [i][j];
+			 	minCol = [0][j];			
+			 	
+			 			}
+			 
+						   }
+
+
+
+	}
+
+for (int i =0;i<cols;i++){
+
+	
+	
+		for (int j =0; j< rows;j++){
+		
+			 if (input[i][j] < minCol){
+			 	minCol = input [i][j];			
+			 	
+			 	}
+			 
+		 }
+
+
+
+	}
+
+
+
+printf(" output: %d %d" , min , minCol);
+*/
+
+
+
+}
+
+
+int main (){
+
+int input [10][10],  rows,cols;
+printf("enter matrix length\n");
+scanf("%d %d",&rows,&cols);
+
+accept(input,rows,cols);
+
+printf("matrix 1 output: \n");
+print(input,rows,cols);
+
+saddleChk(input,rows,cols);
+
+return 0; 
+}
+

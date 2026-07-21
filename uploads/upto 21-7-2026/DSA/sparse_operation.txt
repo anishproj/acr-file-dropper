@@ -1,0 +1,206 @@
+#include <stdio.h>
+
+void accept(int input[10][10], int rows, int cols) {
+
+	for (int i = 0; i < rows; i++) {
+
+		for (int j = 0; j < cols; j++) {
+			printf("Enter matrix element %d%d ", j, i);
+			scanf("%d", &input[i][j]);
+
+		}
+
+	}
+
+
+}
+
+void print(int input[10][10], int rows, int cols) {
+
+	for (int i = 0; i < rows; i++){
+		for (int j = 0; j < cols; j++) {
+			printf("%d ", input[i][j]);
+		}
+		printf("\n");
+	}
+
+}
+void print_compact(int input[10][3], int rows) {
+
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < 3; j++) {
+			printf("%d ", input[i][j]);
+		}
+		printf("\n");
+	}
+
+}
+
+
+void simple_transpose(int input[10][3], int rows) {
+
+	int output[10][3];
+	int k = 1;
+	int numChk = 0;
+	int temp;
+
+
+	for (numChk = 0; numChk < input[0][1]; numChk++) {
+
+		for (int i = 1; i < rows; i++) {
+
+			if (input[i][1] == numChk) {
+
+				output[k][0] = input[i][1];
+				output[k][1] = input[i][0];
+				output[k][2] = input[i][2];
+				k++;
+			}
+		}
+		output[0][0] = input[0][1];
+		output[0][1] = input[0][0];
+		output[0][2] = input[0][2];
+
+	}
+	print_compact(output, output[0][2] + 1);
+
+
+}
+
+void fast_transpose(int input[10][3], int rows){
+int total[10] = {0},  k=1, index[10] = {0};
+int output[10][3]; 
+
+output[0][0] = input[0][1];
+output[0][1] = input[0][0];
+output[0][2] = input[0][2];
+
+index[0] =1;	
+	for (int i =0; i<input[0][2];i++){
+	
+	total[input[i][1]]++;
+	
+		}
+	
+	for (int i =1; i < input[0][1]; i++){
+	
+	index[i] = index[i-1]+ total[i-1];
+		
+	}
+	
+	for (int i = 1; i <= input[0][2]; i++) {
+            int ColNo = input[i][1];
+
+            
+            int location = index[ColNo];
+
+            
+            output[location][0] = input[i][1]; 
+            output[location][1] = input[i][0];
+            
+            output[location][2] = input[i][2]; 
+
+       
+            index[ColNo]++;
+            
+            
+            
+        }
+        printf("fast transpose:------------------\n");
+        print_compact(output,output[0][2]+1);
+}
+
+void add_transpose(int a[10][3], int b[10][3],rows){
+int sum [20][3],p,q,r;
+if (a[0][1] == b[0][1] && a[0][0] == b[0][0]){
+
+
+printf("matrix sizes not matching!\n");
+return;
+
+}
+
+for (
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+void compaction(int input[10][10], int rows, int cols)
+{
+int output[10][3] ,k =1;
+	for (int i =0; i< rows;i++){
+	
+		for (int j =0; j<cols;j++){
+		
+			if (input[i][j] !=0){
+			output [k][0] = i;
+			output[k][1] = j;
+			output [k][2] = input[i][j];
+			k++;
+			
+			}
+		
+		
+		}
+	
+	}
+	
+	output [0][0] = rows;
+	output [0][1] = cols;
+	output [0][2] = k-1;
+	
+	print_compact( output , k);
+	printf("output simple transpose:--------------------\n");
+simple_transpose(output,k);
+fast_transpose(output,k);
+}
+
+
+
+
+
+
+
+int main() {
+
+	int x[10][10],rows,cols;
+
+	printf("enter rows and cols of matrix: \n");
+	scanf("%d %d", &rows, &cols);
+	accept(x, rows, cols);
+	printf("Matrix:--------------------\n");
+	print(x, rows, cols);
+	printf("output:--------------------\n");
+	compaction(x, rows, cols);
+	
+	
+	
+	
+
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
