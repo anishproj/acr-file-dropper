@@ -1,0 +1,60 @@
+
+; Program to add array of N hexadecimal numbers
+
+section .data
+    array db 12h, 72h, 26h, 07h, 50h   
+    ; Define array of hex numbers 
+
+    count equ 5                         
+    ; Number of elements in array
+
+section .bss
+    result resw 1                       
+    ; Reserve 1 word (16-bit) for result (sum may exceed 8-bit)
+
+section .text
+    global _start
+
+_start:
+
+    mov si, array        
+    ; SI register points to start of array (index pointer)
+
+    mov cx, count        
+    ; CX = loop counter (number of elements)
+
+    xor ax, ax           
+    ; AX = 0000 → clear accumulator (sum = 0)
+    ; AL = lower 8 bits, AH = upper 8 bits
+
+add_loop:
+
+    mov bl, [si]         
+    ; Load current array element into BL
+
+    add al, bl           
+    ; Add element to AL (lower byte of AX)
+
+    adc ah, 00h          
+    ; Add carry to AH (important if AL overflows)
+    ; Ensures full 16-bit correct sum
+
+    inc si               
+    ; Move to next array element
+
+    loop add_loop        
+    ; Decrement CX and repeat loop if CX ≠ 0
+
+    mov [result], ax     
+    ; Store final 16-bit sum in memory
+
+; Exit system call (Linux)
+
+    mov eax, 1           
+    ; syscall number 1 = exit
+
+    mov ebx, 0           
+    ; exit status = 0
+
+    int 80h              
+    ; interrupt to call kernel
