@@ -1,0 +1,23 @@
+void insertionSort(int a[10],int size) {
+	int j,k;
+
+	for (int i = 1; i < size; i++) {
+		k = a[i];
+		j = i - 1;
+
+		while (j >= 0 && a[j] > k) {
+			a[j + 1] = a[j];
+			j--;
+		}
+		a[j + 1] = k;
+
+
+	}
+	printf("ouput: \n");
+
+	for (int i = 0; i < size; i++) {
+		printf("%d\t", a[i]);
+	}
+
+
+}
