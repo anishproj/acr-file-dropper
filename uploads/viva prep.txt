@@ -1,0 +1,154 @@
+🎤 Mock Viva Q&A
+Assignment & Lab Related
+Q: What was the objective of your assignment?
+A: To write an assembly language program on the 8086 to add an array of hexadecimal numbers, understand unpacking hex digits for display, and practice loops in assembly.
+
+Q: How do you unpack a 2-digit hex number for display?
+A: By rotating (ROL) the register to bring each nibble into position, masking with AND 0Fh to isolate it, then converting to ASCII using add 30H for digits or add 37H for letters A–F.
+
+Q: Why do we add 30H or 37H during ASCII conversion?
+A: 30H maps numbers 0–9 to their ASCII codes, while 37H maps hex values A–F to ASCII characters.
+
+Q: What is the difference between ROL and SHL?
+A: ROL rotates bits left, wrapping the MSB into LSB, while SHL shifts bits left, discarding MSB and filling with 0.
+
+Q: What common mistakes occur in assembly loops?
+A: Forgetting the colon after labels, not restoring registers after masking, missing dec before jnz, or incorrect ASCII conversion.
+
+Theory & Architecture
+Q: Explain BIU and EU in 8086.
+A: BIU (Bus Interface Unit) fetches instructions and handles memory/I/O, while EU (Execution Unit) decodes and executes instructions.
+
+Q: What is the role of the instruction queue in 8086?
+A: It prefetches up to 6 bytes of instructions, enabling pipelining so execution and fetching overlap, improving speed.
+
+Q: How does the address bus differ from the data bus?
+A: The address bus is unidirectional (CPU → memory/I/O) and 20-bit wide, while the data bus is bidirectional and 16-bit wide.
+
+Q: What is the function of the control bus?
+A: It carries signals like read, write, and interrupt to coordinate CPU, memory, and I/O operations.
+
+Q: What is segmented memory in 8086?
+A: Memory is divided into segments (Code, Data, Stack, Extra), allowing access to 1 MB memory using 16-bit registers plus segment offsets.
+
+Instruction & Flags
+Q: Explain the CMP instruction.
+A: It subtracts the source from the destination internally, discards the result, and updates flags for conditional jumps.
+
+Q: What does the Zero Flag indicate after a CMP?
+A: It is set if the operands are equal (result = 0).
+
+Q: What is the difference between conditional and unconditional jumps?
+A: Unconditional (jmp) always transfers control, while conditional (jnz, jz, jc) depend on flag status.
+
+Q: Why is CX often used in loops?
+A: CX is the default counter register for loop instructions, automatically decremented and checked.
+
+Q: What is the role of the flag register in 8086?
+A: It stores status flags (Zero, Carry, Sign, Overflow) and control flags (Interrupt, Direction) to guide program flow.
+
+===== ASM LAB QUICK NOTES =====
+
+[NUMERICAL]
+bit=1 | nibble=4 | byte=8 | word=16 | dword=32 | qword=64
+8-bit max=FFH (255)
+16-bit max=FFFFH (65535)
+
+8086:
+data bus=16-bit
+address bus=20-bit → 1MB memory
+prefetch queue=6 bytes
+
+[CORE]
+AX=16-bit sum
+AL=data
+AH=carry
+SI=array pointer
+CX=counter
+
+[INSTRUCTIONS]
+ADD → normal add
+ADC → add + carry (IMPORTANT)
+MOV → transfer
+XOR AX,AX → clear
+LOOP → CX--, jump if ≠0
+
+[WHY ADC]
+AL overflow → carry → AH
+ADC uses carry
+(no ADC → wrong result)
+
+[HEX]
+1 byte=2 nibbles
+range=00H–FFH
+
+[UNPACK]
+AND 0Fh → isolate digit
+ROL → rotate digits
+
+[ASCII]
+0–9 → +30H
+A–F → +37H
+
+[REG]
+AX, AL, AH → data
+SI → pointer
+CX → loop
+
+[ADDR]
+[SI] → indirect
+
+[FLAGS]
+CF=carry (unsigned)
+ZF=zero
+SF=sign
+OF=signed overflow
+PF=parity
+
+CF=unsigned overflow
+OF=signed overflow
+
+[SHIFT]
+ROL=rotate (safe)
+SHL=shift (loses data)
+
+[LOOP]
+CX=CX-1
+if ≠0 → jump
+
+[ERRORS]
+no ADC
+wrong ASCII
+AX not cleared
+wrong loop count
+
+[ARCH]
+BIU=fetch
+EU=execute
+queue=6 bytes
+
+[BUS]
+addr=20-bit
+data=16-bit
+control=signals
+
+[MEM]
+CS,DS,SS,ES
+max=1MB
+
+[ENDIAN]
+little → LSB first
+
+[SYSCALL]
+INT 80H
+
+[VERIFY]
+hex + decimal check
+
+[EXAM LINE]
+ADC handles carry → correct multi-byte addition
+
+[FORMULAS]
+loop = dec + jnz
+hex print = rol + and + ascii
+add = add + adc
