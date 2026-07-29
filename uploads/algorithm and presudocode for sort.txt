@@ -1,0 +1,33 @@
+algorithm :
+use / take input of array (hardcoded declaration/input)
+delcare a temporary variable in section .bss for swapping
+declare a macro for read/write 
+section .text:
+initialise counter to size of array size for loop declaration
+run outer loop for iterating through the elements
+run inner loop to iterate thru next index of outer loop element and compare value
+compare elements at index of outer loop and index of outer loop +1
+if element of outer loop index is greater than outer loop index+1, swap.
+use display function to print the sorted array
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
