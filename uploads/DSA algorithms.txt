@@ -33,7 +33,52 @@ for i := 1 to t do
   (B(T(j),0),B(T(j),1),B(T(j),2)) := (A(i,1),A(i,0),A(i,2))
   T(j) := T(j)+1
 Explanation: Uses row-count and position arrays for faster transpose.
+alternate algorithm code style:
+procedure FastTranspose(A, B)
+{
+    // A is sparse matrix in compact form
+    // B will store the transpose
 
+    int m = A[0][0];
+    int n = A[0][1];
+    int t = A[0][2];
+
+    B[0][0] = n;
+    B[0][1] = m;
+    B[0][2] = t;
+
+    if (t <= 0) return;
+
+    // Step 1: Count elements in each column of A
+    int S[n];
+    for (int i = 0; i < n; i++)
+        S[i] = 0;
+
+    for (int i = 1; i <= t; i++)
+        S[A[i][1]]++;
+
+    // Step 2: Compute starting positions in B
+    int T[n];
+    T[0] = 1;
+    for (int i = 1; i < n; i++)
+        T[i] = T[i-1] + S[i-1];
+
+    // Step 3: Place elements into B
+    for (int i = 1; i <= t; i++)
+    {
+        int col = A[i][1];
+        int pos = T[col];
+
+        B[pos][0] = A[i][1];   // new row = old column
+        B[pos][1] = A[i][0];   // new col = old row
+        B[pos][2] = A[i][2];   // value stays same
+
+        T[col]++; // move to next position
+    }
+}
+
+
+------------------------------
 3. SPARSE TO COMPACT
 --------------------
 Algorithm compact(A,m,n,B)
@@ -48,18 +93,41 @@ Explanation: Converts full matrix into compact form storing only non-zero entrie
 
 4. ADDITION OF SPARSE MATRICES
 ------------------------------
-Algorithm Addition(a,b,c)
-if a(0,0)=b(0,0) and a(0,1)=b(0,1)
-  i=j=k=1
-  while(i<=t1 and j<=t2)
-    compare positions, add values, store in c
-  copy remaining terms
-c(0,2)=k-1
+
+procedure AddSparse(a, b, c)
+{
+    if (a[0][0] != b[0][0] || a[0][1] != b[0][1]) return;
+
+    int i=1, j=1, k=1;
+    int t1=a[0][2], t2=b[0][2];
+    c[0][0]=a[0][0]; c[0][1]=a[0][1];
+
+    while(i<=t1 && j<=t2)
+    {
+        if (a[i][0]==b[j][0] && a[i][1]==b[j][1]) {
+            int sum=a[i][2]+b[j][2];
+            if(sum!=0){ c[k][0]=a[i][0]; c[k][1]=a[i][1]; c[k][2]=sum; k++; }
+            i++; j++;
+        }
+        else if (a[i][0]<b[j][0] || (a[i][0]==b[j][0] && a[i][1]<b[j][1])) {
+            c[k][0]=a[i][0]; c[k][1]=a[i][1]; c[k][2]=a[i][2]; k++; i++;
+        }
+        else {
+            c[k][0]=b[j][0]; c[k][1]=b[j][1]; c[k][2]=b[j][2]; k++; j++;
+        }
+    }
+
+    while(i<=t1) { c[k][0]=a[i][0]; c[k][1]=a[i][1]; c[k][2]=a[i][2]; k++; i++; }
+    while(j<=t2) { c[k][0]=b[j][0]; c[k][1]=b[j][1]; c[k][2]=b[j][2]; k++; j++; }
+
+    c[0][2]=k-1;
+}
+
 Explanation: Merge two compact sparse matrices by comparing row/col positions.
 
 5. SUBTRACTION OF SPARSE MATRICES
 ---------------------------------
-Similar to Addition, but instead of temp=a(i,2)+b(j,2), use temp=a(i,2)-b(j,2).
+Similar to Addition, but instead of c=a(i,2)+b(j,2), use c=a(i,2)-b(j,2).
 Explanation: Works like addition but subtracts values of matching positions.
 
 6. LINEAR SEARCH (Binary Search)
