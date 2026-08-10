@@ -1,0 +1,135 @@
+
+
+ALGORITHMS COLLECTION – MATRIX, SEARCHING, SORTING
+==================================================
+
+1. SIMPLE TRANSPOSE (Sparse Matrix)
+-----------------------------------
+Algorithm Transpose(A,B)
+(m,n,t) := (A(0,0), A(0,1), A(0,2))
+(B(0,0), B(0,1), B(0,2)) := (n,m,t)
+if t <= 0 then return
+q := 1
+for col := 0 to n do
+  for p := 1 to t do
+    if A(p,1) = col then
+      (B(q,0),B(q,1),B(q,2)) := (A(p,1),A(p,0),A(p,2))
+      q := q+1
+Explanation: Transpose rearranges non-zero elements by swapping row and column indices.
+
+2. FAST TRANSPOSE (Sparse Matrix)
+---------------------------------
+procedure FAST_TRANSPOSE(A,B)
+declare S(n), T(n)
+(m,n,t) := (A(0,0), A(0,1), A(0,2))
+(B(0,0), B(0,1), B(0,2)) := (n,m,t)
+if t <= 0 then return
+for i := 0 to n do S(i) := 0
+for i := 1 to t do S(A(i,1)) := S(A(i,1)) + 1
+T(0) := 1
+for i := 1 to n do T(i) := T(i-1) + S(i-1)
+for i := 1 to t do
+  j := A(i,1)
+  (B(T(j),0),B(T(j),1),B(T(j),2)) := (A(i,1),A(i,0),A(i,2))
+  T(j) := T(j)+1
+Explanation: Uses row-count and position arrays for faster transpose.
+
+3. SPARSE TO COMPACT
+--------------------
+Algorithm compact(A,m,n,B)
+B(0,0)=m; B(0,1)=n; k=1
+for i=0 to m
+  for j=0 to n
+    if A(i,j)!=0 then
+      B(k,0)=i; B(k,1)=j; B(k,2)=A(i,j)
+      k++
+B(0,2)=k-1
+Explanation: Converts full matrix into compact form storing only non-zero entries.
+
+4. ADDITION OF SPARSE MATRICES
+------------------------------
+Algorithm Addition(a,b,c)
+if a(0,0)=b(0,0) and a(0,1)=b(0,1)
+  i=j=k=1
+  while(i<=t1 and j<=t2)
+    compare positions, add values, store in c
+  copy remaining terms
+c(0,2)=k-1
+Explanation: Merge two compact sparse matrices by comparing row/col positions.
+
+5. SUBTRACTION OF SPARSE MATRICES
+---------------------------------
+Similar to Addition, but instead of temp=a(i,2)+b(j,2), use temp=a(i,2)-b(j,2).
+Explanation: Works like addition but subtracts values of matching positions.
+
+6. LINEAR SEARCH (Binary Search)
+--------------------------------
+A ← sorted array, n ← size, key ← value
+low=0, high=n-1
+while(low<=high)
+  mid=(low+high)/2
+  if key==A[mid] return mid
+  else if key<A[mid] high=mid-1
+  else low=mid+1
+Explanation: Binary search halves the search space each step.
+
+7. SENTINEL SEARCH
+------------------
+int seqsearch_sentinel(int key)
+{
+  a[n]=key
+  while(key!=a[i]) i++
+  if(i<n) return i
+  else return -1
+}
+Explanation: Places key at end as sentinel to avoid boundary checks.
+
+8. BUBBLE SORT
+--------------
+for i=1 to n
+  for j=0 to n-i-1
+    if a[j]>a[j+1] swap
+Explanation: Repeatedly swaps adjacent elements, largest bubbles to end.
+
+9. SELECTION SORT
+-----------------
+for i=0 to n-2
+  minpos=i
+  for j=i+1 to n-1
+    if a[j]<a[minpos] minpos=j
+  swap a[i],a[minpos]
+Explanation: Selects minimum element each pass and places it at correct position.
+
+10. INSERTION SORT
+------------------
+for i=1 to n-1
+  key=arr[i]; j=i-1
+  while(j>=0 && arr[j]>key)
+    arr[j+1]=arr[j]; j--
+  arr[j+1]=key
+Explanation: Builds sorted array by inserting each element into its correct place.
+
+11. SHELL SORT
+--------------
+gap=n/2
+do
+  do
+    swapped=0
+    for i=0 to n-gap-1
+      if A[i]>A[i+gap] swap, swapped=1
+  while(swapped==1)
+while((gap=gap/2)>=1)
+Explanation: Generalization of insertion sort using gaps; reduces disorder quickly.
+
+==================================================
+NOTES ON SORTING:
+- Bubble Sort: O(n^2), simple but slow.
+- Selection Sort: O(n^2), fewer swaps, good for small arrays.
+- Insertion Sort: O(n^2), efficient for nearly sorted data.
+- Shell Sort: O(n log n) average, faster due to gap-based comparisons.
+
+---
+
+This is now in **plain-text format** — you can copy it into a `.txt` file or GitHub repo directly.  
+
+Would you like me to also add a **short index at the top** (like a table of contents) so you can jump to algorithms quickly when scrolling through the file?
