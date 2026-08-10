@@ -169,17 +169,16 @@ Algorithm bubble()
 ===============================================
 
 र्धुंवं ध्रुवा ।।
-void selectionsort()
+Algorithm SelectionSort(a[], n)
 {
-    for (i = 0; i <= n-2; i++)
+    for (i = 0; i < n-1; i++)
     {
         minpos = i;
-        for (j = i+1; j <= n-1; j++)
+        for (j = i+1; j < n; j++)
         {
             if (a[j] < a[minpos])
                 minpos = j;
         }
-
         if (minpos != i)
         {
             temp = a[i];
@@ -193,17 +192,20 @@ void selectionsort()
 ।। विश्वशान्तिर्ध्रुवं ध्रुवा ।।
 void insertionSort(arr[10], n)
 {
+    // loop through each element starting from index 1
     for (i = 1; i < n; i++)
     {
-        key = arr[i];
-        j = i - 1;
+        key = arr[i];        // take current element as key
+        j = i - 1;           // start comparing with previous element
 
+        // shift elements greater than key one position ahead
         while (j >= 0 && arr[j] > key)
         {
             arr[j+1] = arr[j];
             j = j - 1;
         }
 
+        // place key at its correct position
         arr[j+1] = key;
     }
 }
@@ -211,26 +213,26 @@ void insertionSort(arr[10], n)
 
 void shell_sort(int A[], int n)
 {
-    gap = n / 2;
+    gap = n / 2;             // initial gap is half of array size
     do
     {
         do
         {
-            swapped = 0;
+            swapped = 0;     // flag to check if any swap happened
             for (i = 0; i < n - gap; i++)
             {
+                // compare elements separated by gap
                 if (A[i] > A[i+gap])
                 {
-                    swap(A[i], A[i+gap]);
-                    swapped = 1;
+                    swap(A[i], A[i+gap]); // swap if out of order
+                    swapped = 1;          // mark that swap occurred
                 }
             }
-        } while (swapped == 1);
+        } while (swapped == 1); // repeat until no swaps in this gap
 
-    } while ((gap = gap / 2) >= 1);
+    } while ((gap = gap / 2) >= 1); // reduce gap and continue
 }
 ===================================
-
 
 
 
