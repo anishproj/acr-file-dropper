@@ -152,6 +152,90 @@ int seqsearch_sentinel(int key)
 }
 Explanation: Places key at end as sentinel to avoid boundary checks.
 
+===============================================
+Algorithm bubble()
+{
+    for (i = 1; i <= n; i++)
+    {
+        for (j = 0; j < n - i; j++)
+        {
+            if (a[j] > a[j+1])
+                swap(a[j], a[j+1]);
+        }
+    }
+
+    display(a, n);
+}
+===============================================
+
+र्धुंवं ध्रुवा ।।
+void selectionsort()
+{
+    for (i = 0; i <= n-2; i++)
+    {
+        minpos = i;
+        for (j = i+1; j <= n-1; j++)
+        {
+            if (a[j] < a[minpos])
+                minpos = j;
+        }
+
+        if (minpos != i)
+        {
+            temp = a[i];
+            a[i] = a[minpos];
+            a[minpos] = temp;
+        }
+    }
+}
+====================
+
+।। विश्वशान्तिर्ध्रुवं ध्रुवा ।।
+void insertionSort(arr[10], n)
+{
+    for (i = 1; i < n; i++)
+    {
+        key = arr[i];
+        j = i - 1;
+
+        while (j >= 0 && arr[j] > key)
+        {
+            arr[j+1] = arr[j];
+            j = j - 1;
+        }
+
+        arr[j+1] = key;
+    }
+}
+===================================
+
+void shell_sort(int A[], int n)
+{
+    gap = n / 2;
+    do
+    {
+        do
+        {
+            swapped = 0;
+            for (i = 0; i < n - gap; i++)
+            {
+                if (A[i] > A[i+gap])
+                {
+                    swap(A[i], A[i+gap]);
+                    swapped = 1;
+                }
+            }
+        } while (swapped == 1);
+
+    } while ((gap = gap / 2) >= 1);
+}
+===================================
+
+
+
+
+
+//-----------------------------------------------------------------------------------OLD------------------------------------------------------
 8. BUBBLE SORT
 --------------
 for i=1 to n
