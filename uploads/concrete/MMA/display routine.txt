@@ -1,0 +1,75 @@
+;display routine:
+;pre-requisits: add temp db 0 inside section .data 
+
+%macro rw 4 
+
+	mov rax,%1
+	mov rdi,%2
+	mov rsi,%3
+	mov rdx,%4
+	syscall
+	
+%endmacro
+
+%macro disp 2
+
+	mov ax , word [%1]
+	mov bp , %2
+	
+%%loop:
+	rol ax,04
+	mov bx,ax
+	
+	and al,0Fh
+	cmp al,09
+	jbe %%digit
+	add al,07
+
+%%digit:
+
+	add al,30h
+	mov [temp],al
+	
+	rw 1,1,temp,1
+	
+	mov ax,bx
+	dec bp
+	jnz %%loop
+
+
+
+%endmacro
+
+
+
+
+section .data
+
+	a dw 1Ah
+	alen equ $-a
+	
+	intro db "display routine!",10
+	
+	ilen equ $-intro
+	
+	temp db 0
+
+
+section .bss
+
+
+
+
+section .text
+
+	global _start
+_start:
+
+	rw 1,1,intro,ilen
+	
+	disp a,2    ; replace 2 with no. of digits in otput as this as 9 F as 2 we put 2
+	
+	rw 60,0,0,0
+
+
+
