@@ -1,0 +1,116 @@
+#include <stdio.h>
+#include <math.h>
+
+int main() {
+    int data[10], hamming[20];
+    int m, r = 0, i, j, k;
+
+    printf("Enter number of data bits: ");
+    scanf_s("%d", &m);
+
+    printf("Enter data bits (LSB first):\n");
+    for (i = 1; i <= m; i++) {
+        scanf_s("%d", &data[i]);
+    }
+
+    // Calculate number of parity bits
+    while (pow(2, r) < (m + r + 1)) {
+        r++;
+    }
+    printf("Number of parity bits required: %d\n", r);
+
+    int n = m + r;
+    printf("Total bits (data + parity): %d\n", n);
+
+    // Place bits
+    j = 1;
+    k = 1;
+    for (i = 1; i <= n; i++) {
+        if (i == pow(2, j - 1)) {
+            hamming[i] = 0;
+            printf("Position %d is parity bit\n", i);
+            j++;
+        }
+        else {
+            hamming[i] = data[k];
+            printf("Position %d gets data bit %d\n", i, data[k]);
+            k++;
+        }
+    }
+
+    // Calculate parity bits
+    for (i = 0; i < r; i++) {
+        int pos = pow(2, i);
+        int parity = 0;
+
+        printf("\nCalculating parity for position %d:\n", pos);
+
+        for (j = pos; j <= n; j += 2 * pos) {
+            for (k = j; k < j + pos && k <= n; k++) {
+                parity ^= hamming[k];
+                printf("Checking bit %d -> %d\n", k, hamming[k]);
+            }
+        }
+
+        hamming[pos] = parity;
+        printf("Parity bit at position %d = %d\n", pos, parity);
+    }
+
+    // Display generated Hamming code
+    printf("\nGenerated Hamming Code:\n");
+    for (i = 1; i <= n; i++) {
+        printf("%d ", hamming[i]);
+    }
+
+    // ================= RECEIVER PART =================
+
+    int received[20];
+
+    printf("\n\nEnter received Hamming code (with possible error):\n");
+    for (i = 1; i <= n; i++) {
+        scanf_s("%d", &received[i]);
+    }
+
+    int error_pos = 0;
+
+    printf("\nRechecking parity...\n");
+
+    // Recalculate parity
+    for (i = 0; i < r; i++) {
+        int pos = pow(2, i);
+        int parity = 0;
+
+        printf("\nChecking parity at position %d:\n", pos);
+
+        for (j = pos; j <= n; j += 2 * pos) {
+            for (k = j; k < j + pos && k <= n; k++) {
+                parity ^= received[k];
+                printf("Checking bit %d -> %d\n", k, received[k]);
+            }
+        }
+
+        printf("Parity result = %d\n", parity);
+
+        if (parity != 0) {
+            error_pos += pos;
+        }
+    }
+
+    // Error result
+    if (error_pos == 0) {
+        printf("\nNo error detected ✅\n");
+    }
+    else {
+        printf("\nError detected at position: %d ❌\n", error_pos);
+
+        // Correct error
+        received[error_pos] ^= 1;
+
+        printf("Corrected Hamming Code:\n");
+        for (i = 1; i <= n; i++) {
+            printf("%d ", received[i]);
+        }
+    }
+
+    return 0;
+}

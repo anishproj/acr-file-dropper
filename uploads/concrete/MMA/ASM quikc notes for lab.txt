@@ -1,0 +1,150 @@
+ASM QUICK NOTES (LAB USE)
+
+LABELS
+
+Used as jump targets.
+
+Rules: Any name, must end with colon (:), case-sensitive.
+
+Example:
+up:
+dec cx
+jnz up
+
+LOOP (DEFINITION)
+
+Loop = label + condition + jump back
+
+Basic Loop Syntax:
+mov cx, 5
+loop1:
+; work
+dec cx
+jnz loop1
+
+COMMON JUMP INSTRUCTIONS
+
+Unconditional:
+jmp label (always jumps)
+
+Conditional Jumps:
+jnz : jump if not zero
+jz  : jump if zero
+jc  : jump if carry
+jnc : jump if no carry
+ja  : jump if above
+jb  : jump if below
+jbe : jump if below/equal
+jge : jump if greater/equal
+
+Most Used: jnz label (after dec), jbe label (for hex 0-9 check)
+
+CMP (COMPARISON)
+
+Syntax: cmp a, b
+
+Internally does: a - b (sets flags, no value stored)
+
+Example:
+cmp al, 09
+jbe digit
+
+LOOP CONTROL METHODS
+
+Method 1 (Manual):
+mov cx, 5
+loop1:
+dec cx
+jnz loop1
+
+Method 2 (Using LOOP instruction):
+mov cx, 5
+loop1:
+; work
+loop loop1
+(Note: loop automatically decrements CX and jumps if CX != 0)
+
+REGISTERS
+
+General Use:
+AX : main calculations
+BX : temp storage
+CX : counter
+DX : extra
+
+Special (Do Not Disturb):
+RAX : syscall number
+RDI : arg1
+RSI : arg2
+RDX : arg3
+
+DATA PARTS
+section .data   ; initialized
+section .bss    ; uninitialized
+section .text   ; code
+
+HEX TO ASCII LOGIC
+cmp al, 09
+jbe num
+add al, 07h   ; for A-F
+num:
+add al, 30h   ; final ASCII
+
+Rule:
+0-9 -> add 30h
+A-F -> add 37h (or 07h after 30h)
+
+MASKING (EXTRACT DIGIT)
+and ax, 0Fh   ; keeps last 4 bits only
+
+ROTATE (FOR DISPLAY)
+rol ax, 4     ; shifts hex digits left
+
+BACKUP REGISTER
+mov bx, ax    ; save
+...
+mov ax, bx    ; restore
+(Needed because operations destroy data)
+
+PRINT (SYSCALL)
+rw 1, 1, buffer, length   ; write to screen
+
+EXIT PROGRAM
+rw 60, 0, 0, 0
+
+COMMON PATTERN (DISPLAY LOOP TEMPLATE)
+mov bp, 4
+up:
+rol ax, 4
+mov bx, ax
+and ax, 0Fh
+
+cmp al, 09
+jbe digit
+add al, 07h
+
+digit:
+add al, 30h
+mov [temp], al
+rw 1, 1, temp, 1
+
+  mov ax, bx
+  dec bp
+  jnz up
+COMMON MISTAKES
+
+Forgetting colon (:) after label
+
+Not restoring AX after AND
+
+Using RAX/RDI in logic
+
+Missing dec before jnz
+
+Wrong ASCII conversion
+
+MEMORY TRICKS:
+
+LOOP = label -> work -> dec -> jnz
+
+HEX PRINT = rol -> mask -> convert -> print

@@ -1,0 +1,65 @@
+Section .data
+	msg db 10, "enter your name"
+	msg_len equ $-msg
+	
+	prn db 10, "enter your prn"
+	prn_len equ $-prn
+
+Section .bss
+	input1 resb 60
+	input2 resb 50
+
+Section .text
+	Global _start
+_start:
+	mov rax, 1            ; system call for write 
+	mov rdi, 1          ;file descriptior 1 - standard output
+	mov rsi, msg       ;put offset address of hello in rsi
+	mov rdx , msg_len
+	syscall
+	
+	mov rax, 0           ; system call for write 
+	mov rdi, 0          ;file descriptior 1 - standard output
+	mov rsi, input1       ;put offset address of hello in rsi
+	mov rdx , 60
+	syscall
+	
+	; write enter prn:
+	
+	mov rax, 1           ; system call for write 
+	mov rdi, 1          ;file descriptior 1 - standard output
+	mov rsi, prn       ;put offset address of hello in rsi
+	mov rdx , prn_len
+	syscall
+	
+	
+	mov rax, 0           ; system call for write 
+	mov rdi, 0          ;file descriptior 1 - standard output
+	mov rsi, input2       ;put offset address of hello in rsi
+	mov rdx , 50
+	syscall
+	
+	mov rax, 1          ; system call for write 
+	mov rdi, 1          ;file descriptior 1 - standard output
+	mov rsi, input1       ;put offset address of hello in rsi
+	mov rdx , 60
+	syscall
+	
+	; input 2: prn write:
+	
+	mov rax, 1           ; system call for write 
+	mov rdi, 1          ;file descriptior 1 - standard output
+	mov rsi, input2       ;put offset address of hello in rsi
+	mov rdx , 50
+	syscall
+	
+	
+
+mov rax, 60
+mov rdi, 0
+syscall
+
+
+
+
+

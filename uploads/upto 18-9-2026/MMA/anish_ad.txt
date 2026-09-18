@@ -1,0 +1,37 @@
+%macro rw 4
+	mov rax,%1
+	mov rdi,%2
+	mov rsi,%3
+	mov rdx,%4
+	syscall
+%endmacro
+
+section .data
+	
+	n1 db 5h
+	n2 db 4h
+	
+	
+	
+section .bss
+	
+	addn resb 1
+
+
+section .text
+	global _start
+		
+	_start:
+	
+	 mov al , [n1]
+	 mov al , [n2]
+	 add al , 30h
+	 mov [addn] , al	
+
+	 rw 1,1,addn,1
+	
+	
+	
+	
+
+rw 60,0,0,0

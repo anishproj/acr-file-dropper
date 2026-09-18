@@ -1,0 +1,153 @@
+question:
+accept string from user and didplay it.-f
+--------------------------------------------
+
+------------------------------------------------
+while adding we use ax for aacumulator 
+we initialise it with mov ax,00h
+so that it gets reset to 0. so any old value will reset and fresh data of real addtion will get stored.
+----------------------------------
+commands to run assembly program:
+--to assemble:
+
+nasm -f elf64 first.asm   //first.asm is the file name with .asm extension.
+
+--to link:
+
+ld -o first first.o
+
+--to execute:
+
+./first
+
+---------------------------------------------------------------
+Section .Data part ->
+eg: msg db 10, "sum of array eleemnts is :"
+msg_len equ $-msg  ; laculaates length of message and assigns to variable msg_len 
+
+
+$ -> current address of prompt or pointer.
+10: new line ascii value in decimal. (you can use 0Ah in HEX too)
+equ : assigns right side value to left side variable
+semicolon: comments in assembly lang
+
+----------------------------------------------------
+
+Section .BSS --> uninitilaised variable declaration
+syntax: 
+
+var_name RES memory_type Memeory_Size
+eg: A resb 50
+
+meaning: declrare variable A and assign 50 bytes to it.
+------------------------------------------------------
+Section .Text --> code of program:
+section where instructions are written
+always starts with: 
+global _start    --> entry point of program
+_start:
+
+
+
+
+this part can have:
+microprocessor instructions, read, write system calls etc.
+===========================================================================
+system write/ output call:
+display variable_name contents:
+
+
+===============================================================================
+
+
+
+system write/output call:
+move rax,1  ; function number for writing/output of data 
+mov rdi,1   ;file descriptor id for standard output device
+mov rsi, hello ;starting address of the string to be displayed
+mov rdx,helloLen  ;number of bytes to be displayted
+Syscall  ;System call (built in function)
+
+
+/--------------------------------------------/
+to termminate the program:
+
+mov rax,60 ; function to terminate the program, 60 is function number for sys_exit
+mov rdi,0  ; return code for zero error (return 0 )
+
+-------------------------------------------------
+macro: function in assembly language
+
+macro syntaxc:
+
+%macro rw 4    ; rw is name of macro, editable, 4 is number of paramters passed.
+	mov rax,%1    ;%1 means first argument passed.
+	mov rdi,%2    ;%2 is second argument passed. to define file descriptor - monitor or keyboard?? input ot output??
+	mov rsi,%3    ;%3 is 3rd argument, passed to get offset address of the text
+	mov rdx,%4    ; variable length in bytes.
+	syscall
+%endmacro
+
+
+
+-----------------
+cALLING MACRO:
+
+rw 0,0,MSG,100    ;pasing of arguments to read the input
+rw 1,1,msg,msglen ; we are writing to monitor the output.
+rw 60,0,0,0	  ; here we terminate the program.here we use same function to read, write, and exit program
+-================================================================
+july 22:
+
+check concept of ascii, hex where 0-9 input is there take 30h and for beyond 0-9 input we take 37 
+-------------
+IMP!!!!:
+al = lower byte
+ah = higher byte in register
+ax = ah + al 
+these are general purpose registers.
+ax = arithmmatic and logic - accumulator
+bx = base register 
+cx = counter 
+masking : AND
+cmp - compare
+
+code:
+mov ax, word [result]
+mov bp,4
+up: rol ax,4
+	mov bx,ax
+	and ax,0FH
+	cm al,09
+	jbe down
+	 ad al,07h
+	down: Add al,30h
+	mov byte[temp],al
+	rw 1,1,temp,1
+	mov ax,bx
+	dec bp
+	jnz up
+rw 60,0,0,0
+	
+
+------------------------
+display program:
+rol = rotate left
+and = AND opertion
+
+algortihm will be given ,write code on own
+alrogithm:
+1)load result in AX register, initlisae counter = 4
+2.rotate left ax by 4 bits
+3.save rotated result to BX
+4.and AX with 0Fh
+5.convert to ASCII (compare digit with 09 if digit <9, add 30 H else add 37 H to it)
+6.print the byte with system write call
+7.move bx contents to AX
+8.decrement counter
+9.repeat steps 2 to6 till counter becomes zero
+
+DO NOT USE RAX,RCX,RSI,RDI RDX as pointers since they are used in system calls
+can use rpb and rbx as pointers and take memory variables for counter
+
+	

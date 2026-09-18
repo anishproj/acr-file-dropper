@@ -1,0 +1,31 @@
+%macro rw 4 
+	mov rax%1
+	mov rdi,%2
+	mov rsi%3
+	mov rdx,%4
+	syscall
+
+%endmacro
+
+section .data
+	array db 11h,12h,13h,14h,15h
+	
+	title db,10 "Addition of array: "
+	title_len equ $-title
+	
+section .bss
+	result resw 1
+	n1 resw 2
+	n2 resb 1
+
+section .text
+	global_start:
+	_start:
+	
+	 mov rsi , array
+	 mov ax, 00h    ; clear accumulator
+	 mov bx,0h
+	 mov cx,5      ;counter 
+	
+	up2: 
+

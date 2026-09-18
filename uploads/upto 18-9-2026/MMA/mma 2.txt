@@ -1,0 +1,238 @@
+Assignment 2 — 8-bit Array Sorting
+Problem Statement
+
+Write an ALP to sort 8-bit numbers in ascending/descending order.
+
+Objectives
+To learn assembly language programming for sorting 8-bit hexadecimal numbers.
+To understand comparison and exchange operations in assembly language.
+To learn displaying 2-digit hexadecimal numbers stored in an array.
+To understand loops and conditional jumps used in sorting.
+Theory
+1. CMP Instruction
+
+CMP compares two operands by internally performing subtraction:
+
+CMP destination, source
+
+It does not store the subtraction result; only the flags are affected.
+
+Example:
+
+CMP AL, BL
+
+If AL < BL, the Carry Flag is set for an unsigned comparison.
+
+2. XCHG Instruction
+
+XCHG exchanges the contents of two operands.
+
+Example:
+
+XCHG AL, BL
+
+If:
+
+AL = 25H
+BL = 10H
+
+After XCHG:
+
+AL = 10H
+BL = 25H
+
+It is useful in sorting for swapping two numbers.
+
+3. CMPXCHG Instruction
+
+CMPXCHG means Compare and Exchange.
+
+It compares the destination operand with the accumulator. If they are equal, the source is transferred to the destination; otherwise, the destination is loaded into the accumulator.
+
+Example:
+
+CMPXCHG BL, CL
+
+It is mainly used for conditional exchange and synchronization operations.
+
+4. BSWAP Instruction
+
+BSWAP reverses the byte order of a 32-bit or 64-bit register.
+
+Example:
+
+MOV EAX, 12345678H
+BSWAP EAX
+
+Result:
+
+EAX = 78563412H
+
+It is useful for changing byte order/endian representation.
+
+Algorithm
+i) Algorithm for Sorting Numbers
+Start.
+Initialize the array and number of elements.
+Set the outer loop counter.
+Compare adjacent elements using CMP.
+For ascending order, if the first element is greater than the second, exchange them.
+Continue comparing adjacent elements.
+Repeat the passes until the complete array is sorted.
+For descending order, exchange the elements when the first element is smaller than the second.
+Stop.
+Simple Bubble Sort Logic
+Compare A[j] and A[j+1]
+
+Ascending:
+If A[j] > A[j+1]
+    Swap
+
+Descending:
+If A[j] < A[j+1]
+    Swap
+ii) Algorithm for Displaying Sorted Numbers
+Start.
+Load the sorted array element.
+Copy the element to a register.
+Extract the upper nibble using ROL and AND 0FH.
+Convert the nibble to ASCII:
+0–9 → add 30H
+A–F → add 37H
+Extract the lower nibble.
+Convert it to ASCII using the same method.
+Display both ASCII characters using the write system call.
+Repeat for every array element.
+Stop.
+Platform
+Editor: gedit — GNU text editor
+Assembler: NASM — Netwide Assembler
+Linker: LD — GNU linker
+Operating System: Linux
+Programming Language: x86-64 Assembly Language
+Input
+
+For example, consider the following 8-bit hexadecimal array:
+
+45H, 12H, A3H, 27H, 5BH
+
+Each element is an 8-bit hexadecimal number.
+
+Output
+Ascending Order
+12H 27H 45H 5BH A3H
+Descending Order
+A3H 5BH 45H 27H 12H
+
+The sorted output is obtained by comparing and exchanging adjacent elements.
+
+Conclusion
+
+The assembly language program for sorting an array of 8-bit hexadecimal numbers in ascending and descending order was successfully implemented. The concepts of comparison, exchange, loops, conditional jumps, and hexadecimal number display were understood. The sorted output was verified successfully.
+
+FAQs
+1. Write the algorithm if we have to accept numbers from the user.
+Start.
+Display a message asking the user to enter the number of elements.
+Accept the number of elements using keyboard input.
+Accept each hexadecimal digit/number from the keyboard.
+Convert the ASCII input into hexadecimal value.
+Store the converted values in the array.
+Perform sorting using the required sorting algorithm.
+Display the sorted array.
+Stop.
+2. Explain ROL, AND, CMP, JBE, JNZ
+ROL — Rotate Left
+
+Rotates bits to the left. The bit shifted out from MSB enters the LSB.
+
+ROL AL, 4
+
+Example:
+
+AL = 25H
+ROL AL,4 → 52H
+AND — Logical AND
+
+Performs bit-by-bit AND operation.
+
+AND AL, 0FH
+
+Used to extract the lower nibble.
+
+Example:
+
+AL = A5H
+AND AL, 0FH
+AL = 05H
+CMP — Compare
+
+Compares two operands by subtraction and updates flags.
+
+CMP AL, BL
+
+The result is not stored.
+
+JBE — Jump Below or Equal
+
+Jumps when the first unsigned operand is below or equal to the second.
+
+It mainly checks:
+
+CF = 1 OR ZF = 1
+JNZ — Jump if Not Zero
+
+Jumps when:
+
+ZF = 0
+
+It is commonly used to repeat a loop until a value becomes zero.
+
+3. What are different sorting algorithms and which one is better?
+
+Common sorting algorithms:
+
+Bubble Sort
+Selection Sort
+Insertion Sort
+Merge Sort
+Quick Sort
+Heap Sort
+
+For this practical, Bubble Sort is simple to implement in assembly because it mainly requires:
+
+CMP → conditional jump → XCHG
+
+For large datasets, Quick Sort/Merge Sort generally provide better average performance than Bubble Sort.
+
+4. List and explain logical and arithmetic instructions.
+Logical Instructions
+
+Perform bitwise operations.
+
+Instruction	Function
+AND	Bitwise AND
+OR	Bitwise OR
+XOR	Bitwise XOR
+NOT	Complements bits
+TEST	Performs AND and updates flags without storing result
+
+Example:
+
+AND AL, 0FH
+
+Used to extract the lower nibble.
+
+Arithmetic Instructions
+
+Perform mathematical operations.
+
+Instruction	Function
+ADD	Addition
+ADC	Addition with carry
+SUB	Subtraction
+SBB	Subtraction with borrow
+INC	Increment by 1
+DEC	Decrement by 1
+MUL	Unsigned multiplication
+DIV	Unsigned division
