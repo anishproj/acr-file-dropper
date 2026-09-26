@@ -1,0 +1,180 @@
+EXP 4:
+
+RIP:
+-------
+setup:
+[pc 0]--[switch 0]--[router 0]-----[router 1]--[switch 1]--[pc 1]
+
+pc0: 
+set ip to 192.168.1.2
+default gateway 192.168.1.1
+
+router 0:
+set ip to 192.168.1.1 for gigabit ehternet 0/0/1
+set ip to 10.0.0.1 for gigabit ehternet 0/0/0
+go to config->routing section: RIP:
+add address:
+1)192.168.1.0 
+2)10.0.0.0
+===
+pc1: 
+set ip to 192.168.2.2
+default gateway 192.168.2.1
+
+router 1:
+set ip to 192.168.2.1 for gigabit ehternet 0/0/1
+set ip to 10.0.0.2 for gigabit ehternet 0/0/0
+go to config->routing section: RIP:
+add address:
+1)192.168.2.0 
+2)10.0.0.0
+=====
+ping from pc0 to pc1 with ping 192.168.2.2
+Rip helps routers know info about each others lan and allow connection of lan1 devices with lan n devices.
+
+=============================================================================================
+OSPF:
+
+setup:
+[pc 0]--[switch 0]--[router 0]-----[router 1]--[switch 1]--[pc 1]
+
+pc0: 
+set ip to 192.168.3.2
+default gateway 192.168.3.1
+
+router 0:
+set ip to 192.168.3.1 for gigabit ehternet 0/0/1
+set ip to 10.0.1.1 for gigabit ehternet 0/0/0
+router ospf config: terminal:
+
+router ospf 1
+network 192.168.1.0 0.0.0.255 area 0
+network 10.0.0.0 0.0.0.3 area 0
+
+pc1: 
+set ip to 192.168.4.2
+default gateway 192.168.4.1
+
+router 1:
+set ip to 192.168.4.1 for gigabit ehternet 0/0/1
+set ip to 10.0.1.2 for gigabit ehternet 0/0/0
+router terminal config:
+
+router ospf 1
+network 10.0.0.0 0.0.0.3 area 0
+network 192.168.2.0 0.0.0.255 area 0
+
+=====
+OSPF: interior gatewway protocol , uses hello messages and link-state-databases
+to store network topology representation, uses djikistra shortest path first and cost metric (bandwidth instead of hops)
+=============================================================================================
+EIGRP:
+
+setup:
+[pc 0]--[switch 0]--[router 0]-----[router 1]--[switch 1]--[pc 1]
+
+pc0: 
+set ip to 192.168.1.2
+default gateway 192.168.1.1
+
+router 0:
+set ip to 192.168.1.1 for gigabit ehternet 0/0/1
+set ip to 10.0.2.1 for gigabit ehternet 0/0/0
+
+router 0 cli:
+enable
+configure terminal
+router eigrp 100
+network 192.168.1.0
+network 10.0.2.0
+no auto-summary
+exit
+
+===
+pc1: 
+set ip to 192.168.2.2
+default gateway 192.168.2.1
+
+router 1:
+set ip to 192.168.2.1 for gigabit ehternet 0/0/1
+set ip to 10.0.2.2 for gigabit ehternet 0/0/0
+router 1 cli:
+
+enable
+configure terminal
+router eigrp 100
+network 192.168.2.0
+network 10.0.2.0
+no auto-summary
+exit
+
+--------------------------------------------------------------------
+BGP:
+setup:
+
+[pc 0]--[switch 0]--[router 0]-----[router 1]--[switch 1]--[pc 1]
+
+2. IP addressing
+PC0:
+-IP: 192.168.7.2
+-Mask: 255.255.255.0
+-Gateway: 192.168.7.1
+
+Router0:
+-G0/0/0 → 192.168.7.1 /24
+-G0/0/1 → 10.0.3.1 /30
+
+Router1
+-G0/0/0 → 10.0.3.2 /30
+-G0/0/1 → 192.168.8.1 /24
+
+PC1
+
+-IP: 192.168.8.2
+-Mask: 255.255.255.0
+-Gateway: 192.168.8.1
+
+Configure these through Config → Interfaces, as before.
+
+3. Configure BGP in router terminal:
+router 0:
+enable
+configure terminal
+router bgp 100
+neighbor 10.0.3.2 remote-as 200
+network 192.168.7.0 mask 255.255.255.0
+exit
+
+Router1 
+enable
+configure terminal
+router bgp 200
+neighbor 10.0.3.1 remote-as 100
+network 192.168.8.0 mask 255.255.255.0
+exit
+
+4. Verify
+On Router0:
+
+show ip bgp summary
+You should see Router1 (10.0.3.2) as a BGP neighbor.
+Then:
+show ip route
+Look for:
+B    192.168.8.0/24
+Finally:
+PC0 → ping 192.168.8.2
+If it replies, your BGP experiment is working.
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,50 @@
+1) setup router : interface 0 : default gateway 192.168.1.1 (IP) and no shutdown via terminal
+2)add switch -> connect 2 PC and 2 servers (use 2960 switch)
+3)expected topology:
+PC0 ─────┐
+PC1 ─────┤
+Server0 ─┼── Switch ─── Router
+Server1 ─┘
+-------------------------------------
+4)Server 0: USE FOR EMAIL 
+first go to config-> fast ethernet0 -> IPv4: 192.168.1.3 (static)
+steps:
+a. go to services: look for EMAIL turn on smtp,pop3
+b.add users: 
+	-domain name cse.com
+	-users : a1, a2 etc 
+	-password a1: 123, a2: 123
+	-for each user click "+"
+
+5)go to other server -> services
+first go to config-> fast ethernet0 -> IPv4: 192.168.1.2 (static)
+a. go to dhcp-> service on :
+	-pool name: LAN
+	-default gateway: 192.168.1.1
+	-dns server: 192.168.1.2
+	-start ip: 192.168.1.10
+	-subnet mask 255.255.255.0
+	-max users: 50
+	-click add
+
+b. go to services: DNS
+DNS SERVICE: ON
+NAME: cse.com
+address: 192.168.1.3 (same as of current server)
+click add
+------------------------------------------
+
+PC side:
+1) PC0 :
+go to desktop: ip configuration, DHCP on 
+go to desktop: email : 
+add name, email:a1@cse.com password: 123, incoming/outgoing server: 192.168.1.3 (for both)
+then click compose, add message , sneder, send
+
+2) PC1 :
+go to desktop: ip configuration, DHCP on 
+go to desktop: email : 
+add name, email:a2@cse.com password: 123, incoming/outgoing server: 192.168.1.3 (for both)
+then click receive, check receied mail.
+
+PC 0: desktop: web browser, type cse.com see web page.
