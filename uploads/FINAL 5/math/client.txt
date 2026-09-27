@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+
+int main()
+{
+    int s, a, b, result;
+    char op;
+    struct sockaddr_in server;
+
+    s = socket(AF_INET, SOCK_STREAM, 0);
+
+    server.sin_family = AF_INET;
+    server.sin_port = htons(8888);
+    server.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+    connect(s, (struct sockaddr *)&server, sizeof(server));
+
+    while (1)
+    {
+        printf("Enter first number: ");
+        scanf("%d", &a);
+
+        printf("Enter second number: ");
+        scanf("%d", &b);
+
+        printf("Enter operator (+ - * / %%), q to quit: ");
+        scanf(" %c", &op);
+
+        send(s, &a, sizeof(a), 0);
+        send(s, &b, sizeof(b), 0);
+        send(s, &op, sizeof(op), 0);
+
+        if (op == 'q')
+            break;
+
+        recv(s, &result, sizeof(result), 0);
+
+        printf("Result = %d\n", result);
+    }
+
+    close(s);
+    return 0;
+}

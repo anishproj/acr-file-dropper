@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+
+int main()
+{
+    int s, c;
+    char msg[100];
+    struct sockaddr_in server;
+
+    s = socket(AF_INET, SOCK_STREAM, 0);
+
+    server.sin_family = AF_INET;
+    server.sin_addr.s_addr = INADDR_ANY;
+    server.sin_port = htons(8888);
+
+    bind(s, (struct sockaddr *)&server, sizeof(server));
+    listen(s, 5);
+
+    printf("Waiting for client...\n");
+    c = accept(s, NULL, NULL);
+    printf("Client connected.\n");
+
+    while (1)
+    {
+        recv(c, msg, sizeof(msg), 0);
+
+        if (strcmp(msg, "exit") == 0)
+            break;
+
+        printf("Client: %s\n", msg);
+
+        printf("Server: ");
+        fgets(msg, sizeof(msg), stdin);
+        msg[strcspn(msg, "\n")] = 0;
+
+        send(c, msg, strlen(msg) + 1, 0);
+
+        if (strcmp(msg, "exit") == 0)
+            break;
+    }
+
+    close(c);
+    close(s);
+    return 0;
+}
