@@ -1,0 +1,250 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 100
+
+typedef struct {
+    int roll;
+    char name[50];
+    float marks;
+} Student;
+
+// Display all student records
+void display(Student s[], int n) {
+    if (n == 0) {
+        printf("\nDatabase is empty!\n");
+        return;
+    }
+    printf("\nRoll No\t%-20s\tMarks\n", "Name");
+    printf("----------------------------------------\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d\t%-20s\t%.2f\n", s[i].roll, s[i].name, s[i].marks);
+    }
+}
+
+// 1. Linear Search (by Roll No)
+int linearSearch(Student s[], int n, int targetRoll) {
+    for (int i = 0; i < n; i++) {
+        if (s[i].roll == targetRoll) {
+            return i; // Found at index i
+        }
+    }
+    return -1; // Not found
+}
+
+// 2. Binary Search (by Roll No - Requires array to be sorted by Roll No)
+int binarySearch(Student s[], int n, int targetRoll) {
+    int low = 0, high = n - 1;
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        if (s[mid].roll == targetRoll) {
+            return mid;
+        } else if (s[mid].roll < targetRoll) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+    return -1;
+}
+
+// 3. Selection Sort (Sort by Roll No)
+void selectionSort(Student s[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        int minpos = i;
+        for (int j = i + 1; j < n; j++) {
+            if (s[j].roll < s[minpos].roll) {
+                minpos = j;
+            }
+        }
+        if (minpos != i) {
+            Student temp = s[i];
+            s[i] = s[minpos];
+            s[minpos] = temp;
+        }
+    }
+}
+
+// 4. Alphabetical Selection Sort (Practice Assignment 3: Sort by Name)
+void selectionSortByName(Student s[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        int minpos = i;
+        for (int j = i + 1; j < n; j++) {
+            if (strcmp(s[j].name, s[minpos].name) < 0) {
+                minpos = j;
+            }
+        }
+        if (minpos != i) {
+            Student temp = s[i];
+            s[i] = s[minpos];
+            s[minpos] = temp;
+        }
+    }
+}
+
+// 5. Insertion Sort (Sort by Roll No)
+void insertionSort(Student s[], int n) {
+    for (int i = 1; i < n; i++) {
+        Student key = s[i];
+        int j = i - 1;
+        while (j >= 0 && s[j].roll > key.roll) {
+            s[j + 1] = s[j];
+            j = j - 1;
+        }
+        s[j + 1] = key;
+    }
+}
+
+// 6. Shell Sort (Sort by Roll No)
+void shellSort(Student s[], int n) {
+    for (int gap = n / 2; gap > 0; gap /= 2) {
+        for (int i = gap; i < n; i++) {
+            Student temp = s[i];
+            int j;
+            for (j = i; j >= gap && s[j - gap].roll > temp.roll; j -= gap) {
+                s[j] = s[j - gap];
+            }
+            s[j] = temp;
+        }
+    }
+}
+
+// Practice Assignment 1: Insert Record at Specific Position
+int insertRecord(Student s[], int *n, Student newStud, int pos) {
+    if (*n >= MAX) {
+        printf("Database full!\n");
+        return 0;
+    }
+    if (pos < 0 || pos > *n) {
+        printf("Invalid position!\n");
+        return 0;
+    }
+    for (int i = *n; i > pos; i--) {
+        s[i] = s[i - 1];
+    }
+    s[pos] = newStud;
+    (*n)++;
+    return 1;
+}
+
+// Practice Assignment 2: Delete Record by Roll Number
+int deleteRecord(Student s[], int *n, int roll) {
+    int index = linearSearch(s, *n, roll);
+    if (index == -1) {
+        printf("Record with Roll No %d not found!\n", roll);
+        return 0;
+    }
+    for (int i = index; i < *n - 1; i++) {
+        s[i] = s[i + 1];
+    }
+    (*n)--;
+    printf("Record deleted successfully!\n");
+    return 1;
+}
+
+int main() {
+    Student s[MAX];
+    int n = 0, choice, key, pos, idx;
+    Student newStud;
+
+    printf("Enter initial number of students: ");
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        printf("\nEnter details for Student %d:\n", i + 1);
+        printf("Roll No: ");
+        scanf("%d", &s[i].roll);
+        printf("Name: ");
+        scanf("%s", s[i].name);
+        printf("Marks: ");
+        scanf("%f", &s[i].marks);
+    }
+
+    while (1) {
+        printf("\n================ MENU ================\n");
+        printf("1. Display Database\n");
+        printf("2. Linear Search (by Roll No)\n");
+        printf("3. Binary Search (by Roll No)\n");
+        printf("4. Selection Sort (by Roll No)\n");
+        printf("5. Selection Sort (Alphabetical by Name)\n");
+        printf("6. Insertion Sort (by Roll No)\n");
+        printf("7. Shell Sort (by Roll No)\n");
+        printf("8. Insert New Record\n");
+        printf("9. Delete Record\n");
+        printf("10. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                display(s, n);
+                break;
+
+            case 2:
+                printf("Enter Roll No to search: ");
+                scanf("%d", &key);
+                idx = linearSearch(s, n, key);
+                if (idx != -1)
+                    printf("Found at position %d: Roll: %d, Name: %s, Marks: %.2f\n", idx + 1, s[idx].roll, s[idx].name, s[idx].marks);
+                else
+                    printf("Record not found!\n");
+                break;
+
+            case 3:
+                printf("Note: Ensure list is sorted by Roll No before Binary Search.\n");
+                printf("Enter Roll No to search: ");
+                scanf("%d", &key);
+                idx = binarySearch(s, n, key);
+                if (idx != -1)
+                    printf("Found at position %d: Roll: %d, Name: %s, Marks: %.2f\n", idx + 1, s[idx].roll, s[idx].name, s[idx].marks);
+                else
+                    printf("Record not found!\n");
+                break;
+
+            case 4:
+                selectionSort(s, n);
+                printf("\nDatabase sorted using Selection Sort (by Roll No):\n");
+                display(s, n);
+                break;
+
+            case 5:
+                selectionSortByName(s, n);
+                printf("\nDatabase sorted Alphabetically (by Name):\n");
+                display(s, n);
+                break;
+
+            case 6:
+                insertionSort(s, n);
+                printf("\nDatabase sorted using Insertion Sort (by Roll No):\n");
+                display(s, n);
+                break;
+
+            case 7:
+                shellSort(s, n);
+                printf("\nDatabase sorted using Shell Sort (by Roll No):\n");
+                display(s, n);
+                break;
+
+            case 8:
+                printf("Enter Roll No, Name, Marks: ");
+                scanf("%d %s %f", &newStud.roll, newStud.name, &newStud.marks);
+                printf("Enter index position (0 to %d): ", n);
+                scanf("%d", &pos);
+                if (insertRecord(s, &n, newStud, pos))
+                    printf("Record inserted successfully!\n");
+                break;
+
+            case 9:
+                printf("Enter Roll No to delete: ");
+                scanf("%d", &key);
+                deleteRecord(s, &n, key);
+                break;
+
+            case 10:
+                return 0;
+
+            default:
+                printf("Invalid choice! Try again.\n");
+        }
+    }
+}
