@@ -1,0 +1,101 @@
+;to do: add another loop to continously accept inputs
+ORG 0000H
+
+START:
+    MOV R0, #00H
+    CLR F0
+
+SCAN:
+    ; Scan row 0
+    SETB P0.3
+    CLR P0.0
+    ACALL COLSCAN
+    JB F0, CONVERT
+
+    ; Scan row 1
+    SETB P0.0
+    CLR P0.1
+    ACALL COLSCAN
+    JB F0, CONVERT
+
+    ; Scan row 2
+    SETB P0.1
+    CLR P0.2
+    ACALL COLSCAN
+    JB F0, CONVERT
+
+    ; Scan row 3
+    SETB P0.2
+    CLR P0.3
+    ACALL COLSCAN
+    JB F0, CONVERT
+
+    SJMP START
+
+COLSCAN:
+    JNB P0.4, GOTKEY
+    INC R0
+    JNB P0.5, GOTKEY
+    INC R0
+    JNB P0.6, GOTKEY
+    INC R0
+    RET
+
+GOTKEY:
+    SETB F0
+    RET
+
+CONVERT:
+    MOV A, R0
+
+    CJNE A, #00H, C1
+    MOV A, #0BH
+    SJMP STOP
+
+C1: CJNE A, #01H, C2
+    MOV A, #00H
+    SJMP STOP
+
+C2: CJNE A, #02H, C3
+    MOV A, #0AH
+    SJMP STOP
+
+C3: CJNE A, #03H, C4
+    MOV A, #09H
+    SJMP STOP
+
+C4: CJNE A, #04H, C5
+    MOV A, #08H
+    SJMP STOP
+
+C5: CJNE A, #05H, C6
+    MOV A, #07H
+    SJMP STOP
+
+C6: CJNE A, #06H, C7
+    MOV A, #06H
+    SJMP STOP
+
+C7: CJNE A, #07H, C8
+    MOV A, #05H
+    SJMP STOP
+
+C8: CJNE A, #08H, C9
+    MOV A, #04H
+    SJMP STOP
+
+C9: CJNE A, #09H, C10
+    MOV A, #03H
+    SJMP STOP
+
+C10: CJNE A, #0AH, C11
+     MOV A, #02H
+     SJMP STOP
+
+C11:
+    MOV A, #01H
+
+STOP:
+    SJMP STOP
+
+END
