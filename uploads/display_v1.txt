@@ -1,0 +1,100 @@
+
+ORG 0000H
+LJMP MAIN
+
+; LCD: data P1.7-P1.4, RS=P1.3, E=P1.2
+
+MAIN:
+    CLR P1.3
+
+    ; Initialize LCD into 4-bit mode
+    CLR P1.7
+    CLR P1.6
+    SETB P1.5
+    CLR P1.4
+    ACALL PULSE
+    ACALL DELAY
+    ACALL PULSE
+    SETB P1.7
+    ACALL PULSE
+    ACALL DELAY
+
+    MOV A,#28H       ; 2 lines, 4-bit mode
+    ACALL LCD_CMD
+    MOV A,#0CH       ; Display ON, cursor OFF
+    ACALL LCD_CMD
+    MOV A,#06H       ; Cursor increment
+    ACALL LCD_CMD
+    MOV A,#01H       ; Clear display
+    ACALL LCD_CMD
+    ACALL DELAY
+
+    MOV DPTR,#MESSAGE
+
+PRINT:
+    CLR A
+    MOVC A,@A+DPTR
+    JZ SCROLL_START
+    ACALL LCD_DATA
+    INC DPTR
+    SJMP PRINT
+
+SCROLL_START:
+    ACALL DELAY
+
+SCROLL:
+    MOV A,#18H       ; Shift display left
+    ACALL LCD_CMD
+    ACALL DELAY
+    SJMP SCROLL
+
+; Send command: A = command byte
+LCD_CMD:
+    CLR P1.3
+    SJMP SEND_BYTE
+
+; Send character: A = ASCII character
+LCD_DATA:
+    SETB P1.3
+
+SEND_BYTE:
+    MOV C,ACC.7
+    MOV P1.7,C
+    MOV C,ACC.6
+    MOV P1.6,C
+    MOV C,ACC.5
+    MOV P1.5,C
+    MOV C,ACC.4
+    MOV P1.4,C
+    ACALL PULSE
+
+    MOV C,ACC.3
+    MOV P1.7,C
+    MOV C,ACC.2
+    MOV P1.6,C
+    MOV C,ACC.1
+    MOV P1.5,C
+    MOV C,ACC.0
+    MOV P1.4,C
+    ACALL PULSE
+    ACALL DELAY
+    RET
+
+PULSE:
+    SETB P1.2
+    CLR P1.2
+    RET
+
+DELAY:
+    MOV R5,#100
+D1:
+    MOV R6,#255
+D2:
+    DJNZ R6,D2
+    DJNZ R5,D1
+    RET
+
+MESSAGE:
+    DB 'VOTE CAST: PARTY A',0
+
+END
