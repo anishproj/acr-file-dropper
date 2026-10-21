@@ -1,0 +1,202 @@
+
+ORG 0000H
+    LJMP MAIN
+
+ORG 0030H
+
+MAIN:
+    MOV SP, #60H
+
+    ; Initialize vote counters
+    MOV 30H, #00H
+    MOV 31H, #00H
+    MOV 32H, #00H
+    MOV 33H, #00H
+    MOV 34H, #00H
+    MOV 35H, #00H
+    MOV 36H, #00H
+    MOV 37H, #00H
+    MOV 38H, #00H
+
+    MOV P0, #0FFH
+
+; Scan keypad
+SCAN:
+    MOV R0, #00H
+    CLR F0
+
+    ; Row 0
+    SETB P0.3
+    CLR P0.0
+    ACALL COLSCAN
+    JB F0, CONVERT
+
+    ; Row 1
+    SETB P0.0
+    CLR P0.1
+    ACALL COLSCAN
+    JB F0, CONVERT
+
+    ; Row 2
+    SETB P0.1
+    CLR P0.2
+    ACALL COLSCAN
+    JB F0, CONVERT
+
+    ; Row 3
+    SETB P0.2
+    CLR P0.3
+    ACALL COLSCAN
+    JB F0, CONVERT
+
+    LJMP SCAN
+
+; Check columns
+COLSCAN:
+    JNB P0.4, GOTKEY
+    INC R0
+    JNB P0.5, GOTKEY
+    INC R0
+    JNB P0.6, GOTKEY
+    INC R0
+    RET
+
+GOTKEY:
+    SETB F0
+    RET
+
+; Convert key position into key value
+CONVERT:
+    MOV A, R0
+
+    CJNE A, #00H, C1
+    MOV A, #0BH
+    LJMP KEY_READY
+
+C1:
+    CJNE A, #01H, C2
+    MOV A, #00H
+    LJMP KEY_READY
+
+C2:
+    CJNE A, #02H, C3
+    MOV A, #0AH
+    LJMP KEY_READY
+
+C3:
+    CJNE A, #03H, C4
+    MOV A, #09H
+    LJMP KEY_READY
+
+C4:
+    CJNE A, #04H, C5
+    MOV A, #08H
+    LJMP KEY_READY
+
+C5:
+    CJNE A, #05H, C6
+    MOV A, #07H
+    LJMP KEY_READY
+
+C6:
+    CJNE A, #06H, C7
+    MOV A, #06H
+    LJMP KEY_READY
+
+C7:
+    CJNE A, #07H, C8
+    MOV A, #05H
+    LJMP KEY_READY
+
+C8:
+    CJNE A, #08H, C9
+    MOV A, #04H
+    LJMP KEY_READY
+
+C9:
+    CJNE A, #09H, C10
+    MOV A, #03H
+    LJMP KEY_READY
+
+C10:
+    CJNE A, #0AH, C11
+    MOV A, #02H
+    LJMP KEY_READY
+
+C11:
+    MOV A, #01H
+
+; Increment counter for keys 1-9
+KEY_READY:
+    CJNE A, #01H, CHECK2
+    INC 30H
+    LJMP WAIT_RELEASE
+
+CHECK2:
+    CJNE A, #02H, CHECK3
+    INC 31H
+    LJMP WAIT_RELEASE
+
+CHECK3:
+    CJNE A, #03H, CHECK4
+    INC 32H
+    LJMP WAIT_RELEASE
+
+CHECK4:
+    CJNE A, #04H, CHECK5
+    INC 33H
+    LJMP WAIT_RELEASE
+
+CHECK5:
+    CJNE A, #05H, CHECK6
+    INC 34H
+    LJMP WAIT_RELEASE
+
+CHECK6:
+    CJNE A, #06H, CHECK7
+    INC 35H
+    LJMP WAIT_RELEASE
+
+CHECK7:
+    CJNE A, #07H, CHECK8
+    INC 36H
+    LJMP WAIT_RELEASE
+
+CHECK8:
+    CJNE A, #08H, CHECK9
+    INC 37H
+    LJMP WAIT_RELEASE
+
+CHECK9:
+    CJNE A, #09H, WAIT_RELEASE
+    INC 38H
+
+; Wait until the key is released
+WAIT_RELEASE:
+    MOV P0, #0FFH
+
+RELEASE_LOOP:
+    MOV P0, #0FEH
+    JNB P0.4, RELEASE_LOOP
+    JNB P0.5, RELEASE_LOOP
+    JNB P0.6, RELEASE_LOOP
+
+    MOV P0, #0FDH
+    JNB P0.4, RELEASE_LOOP
+    JNB P0.5, RELEASE_LOOP
+    JNB P0.6, RELEASE_LOOP
+
+    MOV P0, #0FBH
+    JNB P0.4, RELEASE_LOOP
+    JNB P0.5, RELEASE_LOOP
+    JNB P0.6, RELEASE_LOOP
+
+    MOV P0, #0F7H
+    JNB P0.4, RELEASE_LOOP
+    JNB P0.5, RELEASE_LOOP
+    JNB P0.6, RELEASE_LOOP
+
+    MOV P0, #0FFH
+    LJMP SCAN
+
+END
